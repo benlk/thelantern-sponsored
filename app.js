@@ -1,213 +1,122 @@
-//function cheesygraph(url) {
-//  var req;
-//  if (window.XMLHttpRequest) {
-//    // Firefox, Opera, IE7, and other browsers will use the native object
-//    req = new XMLHttpRequest();
-//  } else {
-//    // IE 5 and 6 will use the ActiveX control
-//    req = new ActiveXObject("Microsoft.XMLHTTP");
-//  }
-//
-//  req.onreadystatechange = function () {
-//    if (req.readyState == 4) {
-//      if (req.status === 200 || // Normal http
-//        req.status === 0) { // Chrome w/ --allow-file-access-from-files
-//        return(req.responseText);
-//      }
-//    }
-//  };
-//
-//  req.open("GET", url, true);
-//}
+// copied from http://bl.ocks.org/llimllib/841dd138e429bb0545df
+var rows = []
+var formatdate = d3.time.format("%b.%d, $Y");
+var count = {
+	'sponsored' : 0,
+	'announcement' : 0,
+	'news' : 0,
+	'retweet' : 0
+}
 
-var colorSets = [
-  [
-    '#cccccc', // Days since March 0
-    '#505050', // Non-OSU
-    '#c00000', // OSU
-    '#007db7', // CSCC
-    '#00c000' // Total
-  ],
-  [
-    '#cccccc', // Days since March 0
-    '#505050', // Non-OSU
-    '#c00000', // OSU
-    '#00c000' // Total
-  ],
-  null
-];
-var g = new Dygraph(document.getElementById("dygraph"),
-  "data.csv", {
-    rightGap: 5,
-    hideOverlayOnMouseOut: false,
-    labelsDiv: "dygraph-labels",
-    labelsSeparateLines: true,
-    labelsShowZeroValues: true,
-    legend: "always",
-    colors: colorSets[0],
-    visibility: [false, true, true, true, true],
-    drawXGrid: false,
-    axes: {
-      includeZero: true,
-      y: {
-        valueFormatter: function (y) {
-          return '';
-        },
-        axisLabelFormatter: function (y) {
-          return '';
-        },
-        axisLineWidth: 0,
-        axisLineColor: '#ffffff',
-        yAxisLabelWidth: 0,
-        axisLabelWidth: 0,
-        drawYAxis: false,
-        drawGrid: false
-      },
-      y2: {
-        axisLabelFormatter: function (y) {
-          return Math.round(y * 0.1) / 0.1;
-        },
-        valueFormatter: function (y) {
-          return y;
-        },
-        axisLineColor: '#ffffff',
-        axisLabelColor: '#555555',
-        drawGrid: true,
-        gridLineColor: '#999999',
-        independentTicks: true
-      },
-      x: {
-        axisLineColor: '#777777',
-        axisLabelColor: '#777777'
-      }
+d3.csv("data.csv", function(error, csv) {
+	csv.forEach(function(row) {
+		row.date = parseFloat(row.date).toFixed(1);
+		rows.push(row);
+		
+		switch(row.type) {
+			case 'news':
+				count['news']++;
+				break;
+			case 'sponsored':
+				count['sponsored']++;
+				break;
+			case 'announcement':
+				count['announcement']++;
+				break;
+			case 'retweet':
+				count['retweet']++;
+				break;
+		}
 
-    },
-    'Non-OSU': {
-      axis: {
+		row.ratio = count.sponsored / (count.news + count.retweet);
+	});
 
-      }
-    },
-    'OSU': {
-      axis: 'Non-OSU'
-    },
-    'CSCC': {
-      axis: 'Non-OSU'
-    },
-    'Total': {
-      axis: 'Non-OSU',
-      strokeWidth: 2
-    },
-    'Days since March 0': {
-      axis: 'Non-OSU'
-    }
+	var table = d3.select('#thingoo').append('table');
+		thead = table.append('thead');
+		tbody = table.append('tbody');
 
-    /*,
-        showRangeSelector: true,
-        rangeSelectorHeight: 30,
-        rangeSelectorPlotStrokeColor: 'yellow',
-        rangeSelectorPlotFillColor: 'lightyellow'*/
-    // Commented, but useul in event of future data increases
-  });
+	thead.append('th').text("Date");
+	thead.append('th').text('Tweet');
+	thead.append('th').text('Type');
+	thead.append('th').text('Ratio');
+	thead.append('th').text('');
 
-var sum_x;
-// redefine the getValue prototype to check for column, then modify value by subtracting sum of previous values. Sneaky, neh?
+	var tr = tbody.selectAll('tr').data(rows).enter().append('tr');
 
-//var N = function () {};
-//N.prototype = Dygraph.prototype;
-//N.prototype.loadedEvent_ = function (data) {
-//  this.rawData_ = this.parseCSV_(data);
-//  console.log(this.rawData_);
-//  for (var i = 0; i < this.rawData_.length; i++) {
-//
-//  }
-//  // while loop modifying this.rawData_ values for rows >1 by subtracing previous from current
-//  // probably using this.getValue
-//  this.predraw_();
-//};
-//n.prototype.getValue = function(row, col) {
-//
-//  if (row < 0 || row > this.rawData_.length) return null;
-//  if (col < 0 || col > this.rawData_[row].length) return null;
-//  var x = this.rawData_[row][col];
-//  if (col == 3) {
-//    var y = x - sum_x;
-//    sum_x = sum_x + x;
-//    return y;
-//  } else {
-//    return x;
-//  }
-//};
-var h = new Dygraph(document.getElementById("dy2"),
-  "data-delta.csv", {
-    rightGap: 5,
-    hideOverlayOnMouseOut: false,
-    labelsDiv: "dy2-labels",
-    labelsSeparateLines: true,
-    labelsShowZeroValues: true,
-    legend: "always",
-    colors: colorSets[1],
-    visibility: [false, true, true, true, true],
-    drawXGrid: false,
-    stepPlot: true,
-    axes: {
-      includeZero: true,
-      y: {
-        valueFormatter: function (y) {
-          return '';
-        },
-        axisLabelFormatter: function (y) {
-          return '';
-        },
-        axisLineWidth: 0,
-        axisLineColor: '#ffffff',
-        yAxisLabelWidth: 0,
-        axisLabelWidth: 0,
-        drawYAxis: false,
-        drawGrid: false
-      },
-      y2: {
-        axisLabelFormatter: function (y) {
-          return Math.round(y * 0.1) / 0.1;
-          //return y;
-        },
-        valueFormatter: function (y) {
-          return y;
-        },
-        axisLineColor: '#ffffff',
-        axisLabelColor: '#555555',
-        drawGrid: true,
-        gridLineColor: '#999999',
-        independentTicks: true
-      },
-      x: {
-        axisLineColor: '#777777',
-        axisLabelColor: '#777777'
-      }
+	var td = tr.selectAll('td')
+		.data(function(d) { return [d.date, d.link, d.type, d.ratio]; })
+		.enter().append("td").text(function(d) { return d; });
 
-    },
-    'Non-OSU': {
-      axis: {
+	console.log( d3.select("table")[0]);
 
-      }
-    },
-    'OSU': {
-      axis: 'Non-OSU'
-    },
-    'CSCC': {
-      axis: 'Non-OSU'
-    },
-    'Total': {
-      axis: 'Non-OSU',
-      strokeWidth: 2
-    },
-    'Days since March 0': {
-      axis: 'Non-OSU'
-    }
+	var width = 80,
+		height = d3.select("table")[0][0].clientHeight,
+		mx = 10,
+		radius = 2;
 
-    /*,
-        showRangeSelector: true,
-        rangeSelectorHeight: 30,
-        rangeSelectorPlotStrokeColor: 'yellow',
-        rangeSelectorPlotFillColor: 'lightyellow'*/
-    // Commented, but useul in event of future data increases
-  });
+	// Now add the chart column
+	d3.select("#table tbody tr").append("td")
+		.attr("id", "chart")
+		.attr("width", width)
+		.attr("height", height);
+
+	var maxRatio = 0;
+	var minRatio = Number.MAX_VALUE;
+	for (i=0; i < rows.length; i++) {
+		if (rows[i].ratio > maxRatio) { maxRatio = rows[i].ratio; }
+		if (rows[i].ratio < minRatio) { minRatio = rows[i].ratio; }
+	}
+
+	var dates = rows.map(function(t) { return t.date;});
+
+	var xscale = d3.scale.linear()
+		.domain([minRatio, maxRatio])
+		.range([mx, width-mx])
+		.nice();
+
+	var yscale = d3.scale.ordinal()
+		.domain(dates)
+		.rangeBands([0,height]);
+
+	chart.selectAll(".xasislabel")
+		.data(xscale.ticks(2))
+		.enter().append("text")
+		.attr("class", "xaxislabel")
+		.attr("x", function(d) { return xscale(d); })
+		.attr("y", 10)
+		.attr("text-anchor", "middle")
+		.text(String)
+
+	chart.selectAll(".xaxistick")
+		.data(xscale.ticks(2))
+		.enter().append("line")
+		.attr('x1', function(d) { return xscale(d); })
+		.attr('x2', function(d) { return xscale(d); })
+		.attr('y1', 10)
+		.attr('y2', height)
+		.attr('stroke', '#ddd')
+		.attr('stroke-width', 2);
+
+	chart.selectAll(".line")
+		.data(rows)
+		.enter().append("line")
+		.attr("x1", function(d) { return xscale(d.ratio); })
+		.attr("y1", function(d) { return yscale(d.date) + yscale.rangeBand()/2; })
+		.attr("x2", function(d,i) { return rows[i+1] ? xscale(rows[i+1].ratio) : xscale(d.ratio); })
+		.attr("y2", function(d,i) { return rows[i+1] ? yscale(rows[i+1].date) + yscale.rangeBand()/2 : yscale(d.date) + yscale.rangeBand()/2; })
+		.attr('stroke', '#777')
+		.attr('stroke-width', 1);
+
+	var pt = chart.selectAll(".pt")
+		.data(rows)
+		.enter().append("g")
+		.attr("class", "pt")
+		.attr("transform", function(d) { return "translate(" + xscale(d.ratio) + "," + (yscale(d.date) + yscale.rangeBand()/2) + ")"; });
+
+	pt.append("circle")
+		.attr("cx", 0)
+		.attr("cy", 0)
+		.attr("r", radius)
+		.attr("opacity", .5)
+		.attr("fill", "#ff0000");
+});

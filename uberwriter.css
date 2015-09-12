@@ -72,6 +72,7 @@ blockquote {
 
 p, li {
     margin-top: 10px;
+    margin-bottom: 1em;
 }
 hr {
     margin-top: 40px;
@@ -117,7 +118,7 @@ pre {
 	display: inline-block;
 }
 img {
-	max-width: 600px;
+	max-width: 100%;
 }
 .caption {
 	text-align: center;
