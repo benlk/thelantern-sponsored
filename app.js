@@ -130,4 +130,6 @@ d3.csv("data.csv", function(error, csv) {
 		.attr("r", radius)
 		.attr("opacity", .5)
 		.attr("fill", "#ff0000");
+	
+	d3.select('#current').text( rows[Object.keys(rows)[Object.keys(rows).length -1]].ratio);
 });
