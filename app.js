@@ -13,7 +13,7 @@ d3.csv("data.csv", function(error, csv) {
 	csv.forEach(function(row) {
 		t = parseInt(row.date);
 		t = new Date (t*1000);
-		row.dt = formatdateold(new Date(Date.parse(row.date)));
+		row.dt = t;
 		row.date = formatdate(t);
 
 		rows.push(row);
