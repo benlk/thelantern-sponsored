@@ -1,8 +1,9 @@
 // copied from http://bl.ocks.org/llimllib/841dd138e429bb0545df
 var rows = []
-var formatdate = d3.time.format("%b.%d, $Y");
+var formatdate = d3.time.format("%b. %d, %Y");
+var formatdateold = d3.time.format("%b %d %Y");
 var count = {
-	'sponsored' : 0,
+	'ad' : 0,
 	'announcement' : 0,
 	'news' : 0,
 	'retweet' : 0
@@ -10,15 +11,19 @@ var count = {
 
 d3.csv("data.csv", function(error, csv) {
 	csv.forEach(function(row) {
-		row.date = parseFloat(row.date).toFixed(1);
+		t = parseInt(row.date);
+		t = new Date (t*1000);
+		row.dt = formatdateold(new Date(Date.parse(row.date)));
+		row.date = formatdate(t);
+
 		rows.push(row);
 		
 		switch(row.type) {
 			case 'news':
 				count['news']++;
 				break;
-			case 'sponsored':
-				count['sponsored']++;
+			case 'ad':
+				count['ad']++;
 				break;
 			case 'announcement':
 				count['announcement']++;
@@ -27,8 +32,9 @@ d3.csv("data.csv", function(error, csv) {
 				count['retweet']++;
 				break;
 		}
+		row.link = '<a href="' + row.url + '"/>' + row.url.replace(/^.*\//, '') + '</a>';
 
-		row.ratio = count.sponsored / (count.news + count.retweet);
+		row.ratio = d3.round((count.ad / (count.news + count.retweet)), 3);
 	});
 
 	var table = d3.select('#thingoo').append('table');
@@ -45,9 +51,7 @@ d3.csv("data.csv", function(error, csv) {
 
 	var td = tr.selectAll('td')
 		.data(function(d) { return [d.date, d.link, d.type, d.ratio]; })
-		.enter().append("td").text(function(d) { return d; });
-
-	console.log( d3.select("table")[0]);
+		.enter().append("td").html(function(d) { return d; });
 
 	var width = 80,
 		height = d3.select("table")[0][0].clientHeight,
@@ -55,10 +59,15 @@ d3.csv("data.csv", function(error, csv) {
 		radius = 2;
 
 	// Now add the chart column
-	d3.select("#table tbody tr").append("td")
+	d3.select("#thingoo tbody tr").append("td")
 		.attr("id", "chart")
 		.attr("width", width)
 		.attr("height", height);
+
+	var chart = d3.select("#chart").append("svg")
+		.attr('class', 'chart')
+		.attr('width', width)
+		.attr('height', height);
 
 	var maxRatio = 0;
 	var minRatio = Number.MAX_VALUE;
@@ -67,7 +76,7 @@ d3.csv("data.csv", function(error, csv) {
 		if (rows[i].ratio < minRatio) { minRatio = rows[i].ratio; }
 	}
 
-	var dates = rows.map(function(t) { return t.date;});
+	var dates = rows.map(function(d) { return d.dt;});
 
 	var xscale = d3.scale.linear()
 		.domain([minRatio, maxRatio])
@@ -95,15 +104,15 @@ d3.csv("data.csv", function(error, csv) {
 		.attr('y1', 10)
 		.attr('y2', height)
 		.attr('stroke', '#ddd')
-		.attr('stroke-width', 2);
+		.attr('stroke-width', 1);
 
 	chart.selectAll(".line")
 		.data(rows)
 		.enter().append("line")
 		.attr("x1", function(d) { return xscale(d.ratio); })
-		.attr("y1", function(d) { return yscale(d.date) + yscale.rangeBand()/2; })
+		.attr("y1", function(d) { return yscale(d.dt) + yscale.rangeBand()/2; })
 		.attr("x2", function(d,i) { return rows[i+1] ? xscale(rows[i+1].ratio) : xscale(d.ratio); })
-		.attr("y2", function(d,i) { return rows[i+1] ? yscale(rows[i+1].date) + yscale.rangeBand()/2 : yscale(d.date) + yscale.rangeBand()/2; })
+		.attr("y2", function(d,i) { return rows[i+1] ? yscale(rows[i+1].dt) + yscale.rangeBand()/2 : yscale(d.dt) + yscale.rangeBand()/2; })
 		.attr('stroke', '#777')
 		.attr('stroke-width', 1);
 
@@ -111,7 +120,7 @@ d3.csv("data.csv", function(error, csv) {
 		.data(rows)
 		.enter().append("g")
 		.attr("class", "pt")
-		.attr("transform", function(d) { return "translate(" + xscale(d.ratio) + "," + (yscale(d.date) + yscale.rangeBand()/2) + ")"; });
+		.attr("transform", function(d) { return "translate(" + xscale(d.ratio) + "," + (yscale(d.dt) + yscale.rangeBand()/2) + ")"; });
 
 	pt.append("circle")
 		.attr("cx", 0)
