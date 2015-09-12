@@ -47,22 +47,24 @@ d3.csv("data.csv", function(error, csv) {
 	thead.append('th').text('Ratio');
 	thead.append('th').text('');
 
-	var tr = tbody.selectAll('tr').data(rows).enter().append('tr');
+	var tr = tbody.selectAll('tr')
+		.data(rows)
+		.enter().append('tr')
+		.attr('class', function(d) { return d.type; });
 
 	var td = tr.selectAll('td')
 		.data(function(d) { return [d.date, d.link, d.type, d.ratio]; })
 		.enter().append("td").html(function(d) { return d; });
 
 	var width = 80,
-		height = d3.select("table")[0][0].clientHeight,
+		height = d3.select("table tbody")[0][0].clientHeight,
 		mx = 10,
 		radius = 2;
 
 	// Now add the chart column
 	d3.select("#thingoo tbody tr").append("td")
 		.attr("id", "chart")
-		.attr("width", width)
-		.attr("height", height);
+		.attr("width", width);
 
 	var chart = d3.select("#chart").append("svg")
 		.attr('class', 'chart')

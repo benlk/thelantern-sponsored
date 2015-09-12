@@ -6,6 +6,7 @@ td {
 }
 table {
   border-collapse: collapse;
+  min-width: 100%;
 }
 th {
   border-bottom: 2px solid #ddd;
@@ -16,9 +17,34 @@ td {
   padding: 8px;
   border-top: 1px solid #ddd;
 }
+/* labels */
+tr.retweet,
+tr.retweet a,
+tr.news,
+tr.news a { 
+  color: #777;
+}
+tr.ad {
+  background-color: #eee;
+}
+
 #chart {
   padding: 0px;
 }
 .xaxislabel {
   font-size: 9px;
+}
+tr:first-child td:last-child {
+  position: relative;
+}
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+footer {
+  text-align: center;
+}
+.center {
+  text-align: center;
 }
