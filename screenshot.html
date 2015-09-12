@@ -1,0 +1,105 @@
+<!DOCTYPE HTML5>
+<html>
+	<head>
+		<title>Central Ohio Mumps Tracker</title>
+		<script src="dygraph-combined.js"></script>
+		<link rel="stylesheet" href="screenshot.css" type="text/css"></link>
+		
+		<meta property="og:title" content="Central Ohio Mumps Tracker" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://benlk.github.io/mumps/" />
+		<meta property="og:image" content="http://benlk.github.io/mumps/og-img.png" />
+		<link rel="apple-touch-icon" href="./favicon.png" />
+		<link rel="shortcut icon" href="./favicon.png">
+	</head>
+	<body>
+		<div id="dygraph-container"><div id="dygraph"></div></div>
+		
+		<script>
+		var colorSets = [
+			['#cccccc', // Days since March 0
+			 '#505050', // Non-OSU
+			 '#c00000', // OSU
+			 '#007db7', // CSCC
+			 '#00c000'], // Total
+			null
+		]
+		g = new Dygraph(document.getElementById("dygraph"),
+			"data.csv",
+			{
+				rightGap: 5,
+				hideOverlayOnMouseOut: true,
+				labelsDiv: "",
+				labelsSeparateLines: false,
+				labelsShowZeroValues: true,
+				legend: "never",
+				colors: colorSets[0],
+				visibility: [false, true, true, true, true],
+				drawXGrid: false,
+				axes: {
+					includeZero: true,
+					y: {
+						valueFormatter: function(y) {
+							return '';
+						},
+						axisLabelFormatter: function(y) {
+							return '';
+						},
+						axisLineWidth: 0,
+						axisLineColor: '#ffffff',
+						yAxisLabelWidth: 0,
+						axisLabelWidth: 0,
+						drawYAxis: false,
+						drawGrid: false
+					},
+					y2: {
+						valueFormatter: function(y) {
+							return Math.round(y*0.1)/0.1;
+						},
+						axisLabelFormatter: function(y) {
+							return Math.round(y*0.1)/0.1;
+						},
+						axisLineColor: '#ffffff',
+						axisLabelColor: '#555555',
+						axisLabelWidth: 0,
+						drawGrid: true,
+						gridLineColor: '#999999',
+						independentTicks: true
+					},
+					x: {
+						axisLineColor: '#777777',
+						axisLabelColor: '#777777'
+					}
+					
+				},
+				'Non-OSU': {
+					axis: {
+						
+					}
+				},
+				'OSU': {
+					axis: 'Non-OSU'
+				},
+				'CSCC':{
+					axis: 'Non-OSU'
+				},
+				'Total': {
+					axis: 'Non-OSU',
+					strokeWidth: 2
+				},
+				'Days since March 0': {
+					axis: 'Non-OSU'
+				}
+				
+				/*,
+				showRangeSelector: true,
+				rangeSelectorHeight: 30,
+				rangeSelectorPlotStrokeColor: 'yellow',
+				rangeSelectorPlotFillColor: 'lightyellow'*/
+				// Commented, but useul in event of future data increases
+			});
+		</script>
+		
+	</body>
+</html>
+

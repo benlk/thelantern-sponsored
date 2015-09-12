@@ -1,0 +1,71 @@
+h2.title {
+  text-align: center;
+}
+
+.dygraph-container, .dy2-container {
+	width: 100%;
+	text-align: center;
+	display: block;
+	position: relative;
+}
+.dygraph-container {
+    height: 400px;
+}
+.dy2-container {
+    height: 200px;
+}
+#dygraph, #dy2 {
+	position: absolute;
+	left: -50px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+}
+#dygraph-labels, #dy2-labels {
+	width: auto;
+	display: inline-block;
+	text-align: top;
+	vertical-align: top;
+}
+.dygraph-label {
+	font-weight: normal;
+}
+body {}
+a:hover, a:active { 
+	color: #944;
+}
+p.by {
+	text-align: center;
+	margin-top: 20px;
+	font-size: 0.8em;
+	color: #777;
+}
+p.by a {
+	color: #777;
+	text-decoration: none;
+}
+
+@media screen and (min-width: 800px) {
+	.dygraph-container, .dy2-container {
+		display: block;
+	}
+	#dygraph-labels, #dy2-labels {
+		display: block;
+		float: right;
+		margin-right: -120px;
+		margin-top: -200px;
+		width: 120px;
+	}
+}
+@media screen and (min-width: 800px) and (max-width: 930px){
+	body {
+		margin: 0 auto;
+		padding-right: 120px;
+	}
+}
+@media screen and (max-width: 663px){
+	.dygraph-container {
+		width: 100%;
+		height: 300px;
+	}
+}
