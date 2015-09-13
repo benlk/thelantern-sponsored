@@ -1,5 +1,11 @@
-h2.title {
+h2.title,
+.center {
   text-align: center;
+  margin-bottom: 3em;
+  margin-top: 3em;
+}
+#current {
+  font-weight: bold;
 }
 td {
   white-space: nowrap;
@@ -43,8 +49,5 @@ svg {
   left: 0;
 }
 footer {
-  text-align: center;
-}
-.center {
   text-align: center;
 }
