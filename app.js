@@ -131,5 +131,7 @@ d3.csv("data.csv", function(error, csv) {
 		.attr("opacity", .5)
 		.attr("fill", "#ff0000");
 	
+	// Add the ratio to the text of the story.
 	d3.select('#current').text( rows[Object.keys(rows)[Object.keys(rows).length -1]].ratio);
+	// That isn't valid for _all_ objects, but it's true because of the order of elements put into the object from the spreadsheet.
 });
