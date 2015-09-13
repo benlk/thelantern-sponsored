@@ -25,14 +25,18 @@ td {
   border-top: 1px solid #ddd;
 }
 /* labels */
-tr.retweet,
-tr.retweet a,
-tr.news,
-tr.news a { 
+tr,
+tr a {
   color: #777;
 }
 tr.ad {
   background-color: #eee;
+  color: #111;
+}
+tr.ad a,
+tr.announcement,
+tr.announcement a {
+  color: #111;
 }
 
 #chart {

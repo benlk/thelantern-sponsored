@@ -5,6 +5,7 @@ var formatdateold = d3.time.format("%b %d %Y");
 var count = {
 	'ad' : 0,
 	'announcement' : 0,
+	'opinion' : 0,
 	'news' : 0,
 	'retweet' : 0
 }
@@ -31,10 +32,13 @@ d3.csv("data.csv", function(error, csv) {
 			case 'retweet':
 				count['retweet']++;
 				break;
+			case 'opinion':
+				count['opinion']++;
+				break;
 		}
 		row.link = '<a href="' + row.url + '"/>' + row.url.replace(/^.*\//, '') + '</a>';
 
-		row.ratio = d3.round((count.ad / (count.news + count.retweet)), 3);
+		row.ratio = d3.round((count.ad / (count.news + count.retweet + count.opinion )), 3);
 	});
 
 	var table = d3.select('#thingoo').append('table');
